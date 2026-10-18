@@ -6,79 +6,34 @@
     <title>Redirection Hub Fuyu-kun...</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             text-align: center;
             padding: 50px 20px;
-            background-color: #f4f4f9;
-            color: #333;
+            background-color: #F2F0EB;
+            color: #2D2A26;
         }
         .loader {
-            border: 4px solid #e0e0e0;
-            border-top: 4px solid #2563eb;
+            border: 4px solid #D8D0C4;
+            border-top: 4px solid #1E3A5F;
             border-radius: 50%;
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error { color: #C46210; font-weight: bold; }
+        button {
+            padding: 10px 20px;
+            background: #1E3A5F;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
         }
-        .error {
-            color: #dc2626;
-            font-weight: bold;
-        }
-        a {
-            color: #2563eb;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+        button:hover { background: #2a4d7a; }
     </style>
     <script>
-        // ⚠️ CONFIGURATION : Remplace "hub-redirect" par le vrai nom de ton repository si différent
-        const REDIRECT_JSON_URL = "https://sudonosaka.github.io/hub-redirect/redirect.json";
-        
-        function redirect() {
-            // Ajout d'un timestamp pour forcer le navigateur à ignorer le cache
-            const urlWithCacheBuster = REDIRECT_JSON_URL + "?t=" + Date.now();
-            
-            fetch(urlWithCacheBuster)
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error("Fichier non trouvé ou erreur réseau (HTTP " + res.status + ")");
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    if (data && data.url) {
-                        // Redirection immédiate vers l'URL du tunnel
-                        window.location.href = data.url;
-                    } else {
-                        throw new Error("Format JSON invalide ou URL manquante");
-                    }
-                })
-                .catch(err => {
-                    console.error("Erreur de redirection :", err);
-                    document.body.innerHTML = `
-                        <h1 class="error">Hub hors ligne</h1>
-                        <p>Le serveur est peut-être en cours de redémarrage ou l'URL n'a pas encore été mise à jour.</p>
-                        <p><small>Actualisez la page dans quelques instants.</small></p>
-                        <br>
-                        <a href="#" onclick="location.reload();">🔄 Réessayer</a>
-                    `;
-                });
-        }
-
-        // Lancer la redirection dès que la page est chargée
-        window.onload = redirect;
-    </script>
-</head>
-<body>
-    <h2>Redirection vers le Hub en cours...</h2>
-    <div class="loader"></div>
-    <p>Si la redirection ne fonctionne pas après 5 secondes, <a href="#" onclick="location.reload();">cliquez ici</a>.</p>
-</body>
-</html>
+        // ⚠️ IMPORTANT
