@@ -1,64 +1,29 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hub</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <h1>hub</h1>
-            <p class="subtitle">Hub permettant d'accéder aux autres sites et ressources</p>
-        </div>
-        <button id="theme-toggle" aria-label="Changer de thème">
-            <span class="icon-sun">☀️</span>
-            <span class="icon-moon">🌙</span>
-        </button>
-    </header>
-
-    <main>
-        <section class="carousel-container">
-            <button class="carousel-btn prev" aria-label="Précédent">❮</button>
-
-            <div class="carousel">
-                <div class="carousel-track">
-                    <a href="https://sudonosaka.github.io/Structure-de-la-matiere/" class="card" data-name="Structure de la Matière">
-                        <img src="image1.gif" alt="Structure de la Matière">
-                        <span class="card-label">Structure de la Matière (SDLM)</span>
-                    </a>
-                    <a href="https://sudonosaka.github.io/Biologie-Moleculaire-et-Cellulaire/" class="card" data-name="Biologie Moléculaire et Cellulaire">
-                        <img src="image2.gif" alt="Biollogie Moléculaire et Cellulaire">
-                        <span class="card-label">Biologie Moléculaire et Cellulaire (BMC)</span>
-                    </a>
-                    <a href="#" class="card" data-name="Projet 3">
-                        <img src="image3.png" alt="Projet 3">
-                        <span class="card-label">Projet 3</span>
-                    </a>
-                    <a href="#" class="card" data-name="Projet 4">
-                        <img src="image4.png" alt="Projet 4">
-                        <span class="card-label">Projet 4</span>
-                    </a>
-                    <a href="#" class="card" data-name="Projet 5">
-                        <img src="image5.png" alt="Projet 5">
-                        <span class="card-label">Projet 5</span>
-                    </a>
-                    <a href="#" class="card" data-name="Projet 6">
-                        <img src="image6.png" alt="Projet 6">
-                        <span class="card-label">Projet 6</span>
-                    </a>
-                </div>
-            </div>
-
-            <button class="carousel-btn next" aria-label="Suivant">❯</button>
-        </section>
-    </main>
-
-    <footer>
-        <p>Hub - Université Evry Paris-Saclay - Fuyu-kun</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+   <!DOCTYPE html>
+   <html lang="fr">
+   <head>
+       <meta charset="UTF-8">
+       <title>Redirection Hub Fuyu-kun...</title>
+       <script>
+           const BIN_ID = "6ad49638ffd5d1605375794a";
+           const API_KEY = "$2a$10$4Nfj.Sh6QjGlPv6u./GBdOeSjuIrs2vmbD7wXztp3/D8teuvJatIS";
+           
+           fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+               headers: { 'X-Master-Key': API_KEY }
+           })
+           .then(res => res.json())
+           .then(data => {
+               if (data.record && data.record.url) {
+                   window.location.href = data.record.url;
+               } else {
+                   document.body.innerHTML = "<h1>Hub actuellement hors ligne. Réessaie plus tard.</h1>";
+               }
+           })
+           .catch(() => {
+               document.body.innerHTML = "<h1>Erreur de connexion au Hub.</h1>";
+           });
+       </script>
+   </head>
+   <body style="font-family: sans-serif; text-align: center; padding: 50px;">
+       <h2>Redirection vers le Hub en cours...</h2>
+   </body>
+   </html>
