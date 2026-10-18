@@ -36,4 +36,48 @@
         button:hover { background: #2a4d7a; }
     </style>
     <script>
-        // ⚠️ IMPORTANT
+        // ✅ CORRECTION : L'URL pointe maintenant vers le bon repository "hub"
+        const REDIRECT_JSON_URL = "https://sudonosaka.github.io/hub/redirect.json";
+        
+        async function redirect() {
+            try {
+                console.log("Tentative de chargement du JSON depuis :", REDIRECT_JSON_URL);
+                
+                // Le timestamp force le navigateur à ignorer le cache
+                const urlWithCacheBuster = REDIRECT_JSON_URL + "?t=" + Date.now();
+                
+                const response = await fetch(urlWithCacheBuster);
+                
+                if (!response.ok) {
+                    throw new Error("Erreur HTTP : " + response.status + " " + response.statusText);
+                }
+                
+                const data = await response.json();
+                console.log("✅ JSON reçu avec succès :", data);
+                
+                if (data && data.url) {
+                    console.log("🚀 Redirection vers :", data.url);
+                    window.location.href = data.url;
+                } else {
+                    throw new Error("Le JSON ne contient pas de champ 'url'");
+                }
+            } catch (error) {
+                console.error("❌ Échec de la redirection :", error);
+                document.body.innerHTML = `
+                    <h1 class="error">Erreur de connexion au Hub</h1>
+                    <p>Impossible de récupérer l'adresse du serveur.</p>
+                    <p><small>Détail technique : ${error.message}</small></p>
+                    <button onclick="location.reload();">🔄 Réessayer</button>
+                `;
+            }
+        }
+
+        window.onload = redirect;
+    </script>
+</head>
+<body>
+    <h2>Redirection vers le Hub en cours...</h2>
+    <div class="loader"></div>
+    <p>Si rien ne se passe après 5 secondes, actualisez la page.</p>
+</body>
+</html>
