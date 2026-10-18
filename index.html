@@ -3,132 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirection Hub Fuyu-kun...</title>
+    <title>Redirection Hub Fuyu-kun</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            text-align: center;
-            padding: 40px 20px;
-            background-color: #F2F0EB;
-            color: #2D2A26;
-            max-width: 600px;
-            margin: 0 auto;
+        /* Variables CSS - Mode clair par defaut */
+        :root {
+            --fond-principal: #F2F0EB;
+            --surface: #FAF8F5;
+            --texte-principal: #2D2A26;
+            --texte-secondaire: #5C5850;
+            --primaire: #1E3A5F;
+            --accent: #C46210;
+            --bordure: #D8D0C4;
         }
-        .card {
-            background-color: #FAF8F5;
-            border: 1px solid #D8D0C4;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 16px;
-            text-align: left;
-        }
-        .card-title-info {
-            color: #1E3A5F;
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-        .card-title-warning {
-            color: #C46210;
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-        .card-text {
-            margin: 0;
-            font-size: 15px;
-            line-height: 1.5;
-            color: #5C5850;
-        }
-        .loader {
-            border: 3px solid #D8D0C4;
-            border-top: 3px solid #1E3A5F;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            animation: spin 1s linear infinite;
-            margin: 24px auto 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .error-msg {
-            display: none;
-            color: #C46210;
-            margin-top: 24px;
-            font-weight: bold;
-        }
-        .retry-btn {
-            display: none;
-            margin-top: 16px;
-            padding: 10px 20px;
-            background-color: #1E3A5F;
-            color: #FAF8F5;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .retry-btn:hover {
-            background-color: #2a4d7a;
-        }
-    </style>
-    <script>
-        const REDIRECT_JSON_URL = "https://sudonosaka.github.io/hub/redirect.json";
-        
-        async function redirect() {
-            try {
-                const urlWithCacheBuster = REDIRECT_JSON_URL + "?t=" + Date.now();
-                const response = await fetch(urlWithCacheBuster);
-                
-                if (!response.ok) {
-                    throw new Error("Erreur HTTP : " + response.status);
-                }
-                
-                const data = await response.json();
-                
-                if (data && data.url) {
-                    // Delai de 1.5 seconde pour laisser le temps de lire les messages
-                    setTimeout(() => {
-                        window.location.href = data.url;
-                    }, 1500);
-                } else {
-                    throw new Error("Format JSON invalide ou URL manquante");
-                }
-            } catch (error) {
-                console.error("Echec de la redirection :", error);
-                document.getElementById("loader").style.display = "none";
-                document.getElementById("error-msg").style.display = "block";
-                document.getElementById("retry-btn").style.display = "inline-block";
+
+        /* Variables CSS - Mode sombre automatique */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --fond-principal: #1C1B1A;
+                --surface: #282624;
+                --texte-principal: #F2F0EB;
+                --texte-secondaire: #C9C0B0;
+                --primaire: #7DB9FF;
+                --accent: #FFB84D;
+                --bordure: #3E3A35;
             }
         }
 
-        window.onload = redirect;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--fond-principal);
+            color: var(--texte-principal);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .conteneur {
+            max-width: 620px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--texte-principal);
+        }
+
+        .sous-titre {
+            font-size: 14px;
+            color: var(--texte-secondaire);
+            margin-bottom: 28px;
+        }
+
+        .carte {
+            background-color: var(--surface);
+            border: 1px solid var(--bordure);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .carte-titre-info {
+            color: var(--primaire);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+
+        .carte-titre-alerte {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+
+        .carte-texte {
+            font-size: 15px;
+            line-height: 1.55;
+            color: var(--texte-secondaire);
+        }
+
+        /* Bloc de progression */
+        .progression-bloc {
+            margin-top: 28px;
+            background-color: var(--surface);
+            border: 1px solid var(--bordure);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .progression-texte {
+            font-size: 14px;
+            color: var(--texte-secondaire);
+            margin-bottom: 12px;
+        }
+
+        .progression-compteur {
+            color: var(--primaire);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progression-barre {
+            width: 100%;
+            height: 6px;
+            background-color: var(--bordure);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progression-remplissage {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primaire);
+            transition: width 0.1s linear;
+        }
+
+        /* Bouton d acces immediat */
+        .bouton-acces {
+            margin-top: 16px;
+            padding: 10px 22px;
+            background-color: var(--primaire);
+            color: var(--surface);
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .bouton-acces:hover {
+            opacity: 0.88;
+        }
+
+        /* Etat erreur */
+        .bloc-erreur {
+            display: none;
+            margin-top: 24px;
+            padding: 18px;
+            background-color: var(--surface);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+        }
+
+        .bloc-erreur h2 {
+            color: var(--accent);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .bloc-erreur p {
+            font-size: 14px;
+            color: var(--texte-secondaire);
+        }
+
+        .bouton-retry {
+            margin-top: 12px;
+            padding: 9px 18px;
+            background-color: var(--accent);
+            color: var(--surface);
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // URL du fichier JSON sur GitHub Pages
+        const REDIRECT_JSON_URL = "https://sudonosaka.github.io/hub/redirect.json";
+
+        // Duree d attente en secondes avant redirection automatique
+        const DUREE_ATTENTE = 10;
+
+        // Reference du lien cible, remplacee des que le JSON est charge
+        let urlCible = null;
+        let intervalleCompteur = null;
+
+        async function chargerUrl() {
+            try {
+                const urlAvecCache = REDIRECT_JSON_URL + "?t=" + Date.now();
+                const reponse = await fetch(urlAvecCache);
+
+                if (!reponse.ok) {
+                    throw new Error("Erreur HTTP " + reponse.status);
+                }
+
+                const data = await reponse.json();
+
+                if (!data || !data.url) {
+                    throw new Error("Champ url manquant dans le JSON");
+                }
+
+                urlCible = data.url;
+                return true;
+            } catch (erreur) {
+                console.error("Echec de chargement du JSON :", erreur);
+                afficherErreur(erreur.message);
+                return false;
+            }
+        }
+
+        function demarrerCompteur() {
+            const barreRemplissage = document.getElementById("progression-remplissage");
+            const compteur = document.getElementById("progression-compteur");
+            const blocCompteur = document.getElementById("progression-bloc");
+            const boutonAcces = document.getElementById("bouton-acces");
+
+            let tempsRestant = DUREE_ATTENTE;
+            const debut = Date.now();
+
+            intervalleCompteur = setInterval(() => {
+                const ecoule = (Date.now() - debut) / 1000;
+                const progression = Math.min(ecoule / DUREE_ATTENTE, 1);
+
+                barreRemplissage.style.width = (progression * 100) + "%";
+                compteur.textContent = Math.max(0, Math.ceil(DUREE_ATTENTE - ecoule));
+
+                if (progression >= 1) {
+                    clearInterval(intervalleCompteur);
+                    rediriger();
+                }
+            }, 100);
+        }
+
+        function rediriger() {
+            if (urlCible) {
+                clearInterval(intervalleCompteur);
+                window.location.href = urlCible;
+            }
+        }
+
+        function afficherErreur(detail) {
+            clearInterval(intervalleCompteur);
+            document.getElementById("progression-bloc").style.display = "none";
+            document.getElementById("bloc-erreur").style.display = "block";
+            document.getElementById("detail-erreur").textContent = detail;
+        }
+
+        window.onload = async function () {
+            const succes = await chargerUrl();
+            if (succes) {
+                demarrerCompteur();
+            }
+        };
     </script>
 </head>
 <body>
-    <h2>Redirection vers le Hub en cours...</h2>
-    
-    <div class="card">
-        <div class="card-title-info">Information de disponibilite</div>
-        <p class="card-text">Si le serveur est inaccessible, merci de patienter. Je ne suis pas disponible 24h/24 et le serveur peut etre eteint en dehors des heures d'utilisation.</p>
-    </div>
+    <div class="conteneur">
+        <h1>Redirection vers le Hub</h1>
+        <p class="sous-titre">Merci de lire les informations ci-dessous avant d'entrer</p>
 
-    <div class="card">
-        <div class="card-title-warning">Avertissement de securite du navigateur</div>
-        <p class="card-text">Si une notification indique que la connexion n'est pas securisee (HTTP), vous pouvez acceder au site sans crainte. Aucune donnee sensible ou personnelle n'est recuperee par cette connexion.</p>
-    </div>
+        <div class="carte">
+            <div class="carte-titre-info">Disponibilite</div>
+            <p class="carte-texte">Si le serveur est inaccessible, merci de patienter. Je ne suis pas disponible 24h/24, le hub peut etre eteint en dehors de mes heures d'utilisation.</p>
+        </div>
 
-    <div class="loader" id="loader"></div>
-    
-    <div class="error-msg" id="error-msg">
-        Impossible de recuperer l'adresse du serveur.
+        <div class="carte">
+            <div class="carte-titre-alerte">Avertissement navigateur</div>
+            <p class="carte-texte">Si une notification indique que la connexion n'est pas securisee, tu peux continuer sans crainte. Aucune donnee personnelle ou sensible n'est recuperee sur ce site.</p>
+        </div>
+
+        <div class="progression-bloc" id="progression-bloc">
+            <div class="progression-texte">
+                Redirection automatique dans <span class="progression-compteur" id="progression-compteur">10</span> secondes
+            </div>
+            <div class="progression-barre">
+                <div class="progression-remplissage" id="progression-remplissage"></div>
+            </div>
+            <button class="bouton-acces" id="bouton-acces" onclick="rediriger()">Acceder maintenant</button>
+        </div>
+
+        <div class="bloc-erreur" id="bloc-erreur">
+            <h2>Serveur injoignable</h2>
+            <p id="detail-erreur">Impossible de recuperer l'adresse du hub.</p>
+            <button class="bouton-retry" onclick="location.reload();">Reessayer</button>
+        </div>
     </div>
-    <button class="retry-btn" id="retry-btn" onclick="location.reload();">Reessayer</button>
 </body>
 </html>
