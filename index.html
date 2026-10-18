@@ -4,26 +4,26 @@
        <meta charset="UTF-8">
        <title>Redirection Hub Fuyu-kun...</title>
        <script>
-           const BIN_ID = "6ad49638ffd5d1605375794a";
-           const API_KEY = "$2a$10$4Nfj.Sh6QjGlPv6u./GBdOeSjuIrs2vmbD7wXztp3/D8teuvJatIS";
+           const GIST_ID = "10a4e0de6af01d91cc1b1f91e06b0f3a";
+           const USERNAME = "SudoNosaka";
            
-           fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-               headers: { 'X-Master-Key': API_KEY }
-           })
+           fetch(`https://api.github.com/gists/${GIST_ID}`)
            .then(res => res.json())
            .then(data => {
-               if (data.record && data.record.url) {
-                   window.location.href = data.record.url;
+               const content = Object.values(data.files)[0].content;
+               const json = JSON.parse(content);
+               if (json.url) {
+                   window.location.href = json.url;
                } else {
-                   document.body.innerHTML = "<h1>Hub actuellement hors ligne. Réessaie plus tard.</h1>";
+                   document.body.innerHTML = "<h1>Hub hors ligne</h1>";
                }
            })
            .catch(() => {
-               document.body.innerHTML = "<h1>Erreur de connexion au Hub.</h1>";
+               document.body.innerHTML = "<h1>Erreur de connexion</h1>";
            });
        </script>
    </head>
    <body style="font-family: sans-serif; text-align: center; padding: 50px;">
-       <h2>Redirection vers le Hub en cours...</h2>
+       <h2>Redirection en cours...</h2>
    </body>
    </html>
